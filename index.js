@@ -11,16 +11,44 @@ app.get("/users", (req, res) => {
   res.send(users);
 });
 //  We now want a single user
-app.post("/users/1", (req, res) => {
-  let user = { _id: 5, Name: "Sampson", Occupation: "Attourney" };
-  // add the user to the array
-  users.push(user);
+app.get("/users/:userId", (req, res) => {
+  let userId = parseInt(req.params.userId);
+  let user = users.find((user) => user._id === userId);
   res.send(user);
 });
 
-// We want to make a put request to mutate an object
-app.put("/users", (req, res) => {
+// We path for a post request!
+app.post("/users", (req, res) => {
+  console.log(req.body);
+  res.send(users[parseInt(req.params.userId) - 1]);
+
+  let user = req.body;
+  user._id = user.length + 1;
+
+  // The push method adds a new variable to an array
+  users.push(user);
+
+  // Our response is to return the users
   res.send(users);
+});
+
+// We are now using the put method to update a user
+app.put("/users/:userId", (req, res) => {
+  let userId = parseInt(req.params.userId) - 1;
+
+  //  We have to create a function to find users within the payload
+  let user = users.find((user) => user._id === userId);
+
+  //  We use dot notation to access the name key and mutate the object
+  user.name = "Jane";
+
+  //  Our response is to return the updated user
+  res.send(users[0]);
+});
+
+//  We want to delete a user
+app.delete("/users/:userId", (req, res) => {
+  res.send(users.splice(1, 1));
 });
 
 /* END - create routes here */
